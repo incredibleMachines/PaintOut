@@ -4,6 +4,7 @@
 #include "ofxTuio.h"
 #include "stroke.h"
 #include "ofxControlPanel.h"
+#include "spraycan.h"
 
 class PaintOut : public ofBaseApp{
 public:
@@ -24,31 +25,37 @@ public:
     void	tuioAdded(ofxTuioCursor & tuioCursor);
 	void	tuioRemoved(ofxTuioCursor & tuioCursor);
 	void	tuioUpdated(ofxTuioCursor & tuioCursor);
+    void    h2rgb(float H, int& R, int& G, int& B);
+    
+    ofxControlPanel  panel;
+    ofxXmlSettings XML;
+    ofTrueTypeFont TTF;
+    ofxTuioClient   tuioClient;
+    
+    vector<spraycan> cans;
+    
+    
+    
+    
+    //Arduino
     void setupArduino(const int & version);
     void digitalPinChanged(const int & pinNum);
     void analogPinChanged(const int & pinNum);
     void updateArduino();
     
-    void h2rgb(float H, int& R, int& G, int& B);
-    
-    ofxControlPanel  panel;
-    ofxXmlSettings XML;
-    ofTrueTypeFont TTF;
     
     
-    int red;
-    int green;
-    int blue;
-    
-    ofxTuioClient   tuioClient;
     //drawing stuff
-    //vector<ofImage>	brushMain;
     ofImage	brushMain[10];
     vector<stroke>		myStrokes;
     int					currentStroke;
     bool				newStroke;
     bool				bDrawing;
     bool                bButtonError;
+    
+    int red;
+    int green;
+    int blue;
     
     //arduino stuff
     ofArduino	ard;

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8389444516E2F3750093ABA0 /* spraycan.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8389444416E2F3750093ABA0 /* spraycan.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		DE9AB2DE16E2BE6C00EF3C30 /* guiBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE9AB2A416E2BE6B00EF3C30 /* guiBaseObject.cpp */; };
 		DE9AB2DF16E2BE6C00EF3C30 /* guiCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE9AB2A616E2BE6B00EF3C30 /* guiCallback.cpp */; };
@@ -105,6 +106,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8389444316E2F2E90093ABA0 /* spraycan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = spraycan.h; sourceTree = "<group>"; };
+		8389444416E2F3750093ABA0 /* spraycan.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spraycan.cpp; sourceTree = "<group>"; };
 		83AF1AA116E2DBE700F49395 /* PaintOut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaintOut.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		DE9AB2A416E2BE6B00EF3C30 /* guiBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiBaseObject.cpp; sourceTree = "<group>"; };
@@ -568,6 +571,8 @@
 				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
 				83AF1AA116E2DBE700F49395 /* PaintOut.h */,
 				E4B69E1E0A3A1BDC003C02F2 /* PaintOut.cpp */,
+				8389444316E2F2E90093ABA0 /* spraycan.h */,
+				8389444416E2F3750093ABA0 /* spraycan.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -712,6 +717,7 @@
 				DE9AB46D16E2D23600EF3C30 /* tinyxmlerror.cpp in Sources */,
 				DE9AB46E16E2D23600EF3C30 /* tinyxmlparser.cpp in Sources */,
 				DE9AB46F16E2D23600EF3C30 /* ofxXmlSettings.cpp in Sources */,
+				8389444516E2F3750093ABA0 /* spraycan.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

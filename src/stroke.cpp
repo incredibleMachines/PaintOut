@@ -48,6 +48,9 @@ void stroke::draw(){
                 ofDisableAlphaBlending();
                 //ofCircle(diff.x-(size/2), diff.y-(size/2), 20);
 			}
+//            if (dist==0) {
+//                brush[int(colors[i].a)].draw(diff.x-(size/2), diff.y-(size/2), size,size);
+//            }
 			//cout << ofDist(pts[i].x, pts[i].y, pts[i+1].x, pts[i+1].y) << endl;
 			
 						
