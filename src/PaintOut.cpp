@@ -21,9 +21,10 @@ void PaintOut::setup(){
 		//brushMain.push_back(temp);
 	}
     
-    ofBackground(0,0,0);
-	bDrawing = true;
+    ofBackground(255,255,255);
+	bDrawing = false;
 	newStroke = true;
+    bButtonError = false;
 	currentStroke=0;
 	ofSetFrameRate(60);
     
@@ -131,6 +132,7 @@ void PaintOut::updateArduino(){
 	ard.update();
 	if (bSetupArduino) {
 		int r,g,b=0;
+        ofBackground(0,0,0);
 		float h = ((float)ard.getAnalog(2))/1024;
 		int h_int = (int) 360*h;
 		h2rgb(h,r,g,b);
@@ -148,43 +150,58 @@ void PaintOut::updateArduino(){
 		if(ard.getDigital(2) == 0 && canButton == false){
 			buttonTime = ofGetElapsedTimeMillis();
 			canButton =true;
-			//changeSound=true;
-		}
-        //        else if (ard.getDigital(2) == 1 && changeSound==true) {
-        //			synthType++;
-        //			changeSound=false;
-        //			canButton=false;
-        //			if (synthType>5) {
-        //				synthType=1;
-        //			}
-        //
-        //		}
+            
+            if(myStrokes.size()>0 && !bDrawing){
+            
+            //undo
+            myStrokes[myStrokes.size()-1].clearStroke();
+            myStrokes.pop_back();
+            currentStroke--;
+            cout << "[CAN BUTTON]" << endl;
+            }
+        
+        }
         else if (ard.getDigital(2) == 1) {
 			canButton=false;
-		}
-		if (canButton == true && (ofGetElapsedTimeMillis()-buttonTime)>= 2000) {
-			//changeSound=false;
-			for(int i=0; i<myStrokes.size(); i++)
-			{
-				myStrokes[i].clearStroke();
-                myStrokes.clear();
-                currentStroke = 0;
-			}
+            if(bButtonError)bButtonError=false;
 		}
         
-		//synthType = int(ofMap(ard.getAnalog(2), 1, 5, 0, 1023));
-		ard.sendPwm(3, ofMap(red, 0, 255, 255, 0));
-		ard.sendPwm(5, ofMap(green, 0, 255, 255, 0));
-		ard.sendPwm(6, ofMap(blue, 0, 255, 255, 0));
-		sharp = ard.getAnalog(4);
-		blurNum = ofMap(sharp, 300, 730, 9, 0);
-        panel.setValueI("VAL_R", red);
-        panel.setValueI("VAL_G", green);
-        panel.setValueI("VAL_B", blue);
-        panel.setValueI("VAL_BLUR", blurNum);
-        panel.setValueI("VAL_SHARP", sharp);
-        panel.setValueB("VAL_BUTT", canButton);
-        panel.setValueB("VAL_CAP", capButton);
+		if (canButton == true && (ofGetElapsedTimeMillis()-buttonTime)>= 2000) {
+			//changeSound=false;
+            
+            ard.sendPwm(3, 255);
+            ard.sendPwm(5, 255);
+            ard.sendPwm(6, 255);
+            
+            bButtonError = true;
+            
+            if(myStrokes.size()>0 && !bDrawing){
+                for(int i=0; i<myStrokes.size(); i++)
+                {
+                    myStrokes[i].clearStroke();
+                    myStrokes.clear();
+                    currentStroke = 0;
+                }
+                cout << "[CAN BUTTON] CLEAR ALL" <<endl;
+            }
+		}
+    
+        
+        if(!bButtonError){
+            //synthType = int(ofMap(ard.getAnalog(2), 1, 5, 0, 1023));
+            ard.sendPwm(3, ofMap(red, 0, 255, 255, 0));
+            ard.sendPwm(5, ofMap(green, 0, 255, 255, 0));
+            ard.sendPwm(6, ofMap(blue, 0, 255, 255, 0));
+            sharp = ard.getAnalog(4);
+            blurNum = ofMap(sharp, 300, 730, 9, 0);
+            panel.setValueI("VAL_R", red);
+            panel.setValueI("VAL_G", green);
+            panel.setValueI("VAL_B", blue);
+            panel.setValueI("VAL_BLUR", blurNum);
+            panel.setValueI("VAL_SHARP", sharp);
+            panel.setValueB("VAL_BUTT", canButton);
+            panel.setValueB("VAL_CAP", capButton);
+        }
 	}
 }
 //--------------------------------------------------------------
@@ -235,6 +252,7 @@ void PaintOut::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void PaintOut::mousePressed(int x, int y, int button){
+    bDrawing=true;
     stroke s;
 	s.brush = brushMain;
 	//pngBrush b;

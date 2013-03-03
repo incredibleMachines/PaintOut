@@ -35,6 +35,7 @@ public:
     ofxXmlSettings XML;
     ofTrueTypeFont TTF;
     
+    
     int red;
     int green;
     int blue;
@@ -47,6 +48,7 @@ public:
     int					currentStroke;
     bool				newStroke;
     bool				bDrawing;
+    bool                bButtonError;
     
     //arduino stuff
     ofArduino	ard;
