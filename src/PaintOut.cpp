@@ -9,12 +9,18 @@ void PaintOut::setup(){
     ofAddListener(tuioClient.cursorAdded,this,&PaintOut::tuioAdded);
 	ofAddListener(tuioClient.cursorRemoved,this,&PaintOut::tuioRemoved);
 	ofAddListener(tuioClient.cursorUpdated,this,&PaintOut::tuioUpdated);
-    ard.connect("/dev/tty.usbserial-A600eztS", 57600);
-	// listen for EInitialized notification. this indicates that
-    // the arduino is ready to receive commands and it is safe to
-    // call setupArduino()
-    ofAddListener(ard.EInitialized, this, &PaintOut::setupArduino);
-	bSetupArduino	= false;	// flag so we setup arduino when its ready, you don't need to touch this :)
+    
+    //create the socket and bind to port 11999
+	udpConnection.Create();
+	udpConnection.Bind(11999);
+	udpConnection.SetNonBlocking(true);
+    
+//    ard.connect("/dev/tty.usbserial-A600eztS", 57600);
+//	// listen for EInitialized notification. this indicates that
+//    // the arduino is ready to receive commands and it is safe to
+//    // call setupArduino()
+//    ofAddListener(ard.EInitialized, this, &PaintOut::setupArduino);
+//	bSetupArduino	= false;	// flag so we setup arduino when its ready, you don't need to touch this :)
     for (int i = 0; i < 10; i++){
 		//int b = i+1;
         brushMain[i].loadImage("brush-0"+ ofToString(i+1) + ".png");
@@ -54,16 +60,62 @@ void PaintOut::setup(){
 void PaintOut::update(){
     tuioClient.getMessage();
     panel.update();
-    updateArduino();
+    //updateArduino();
+    char udpMessage[100000];
+	udpConnection.Receive(udpMessage,100000);
+	string message=udpMessage;
+	if(message!=""){
+        cout << message << endl;
+		//stroke.clear();
+		float x,y;
+		vector<string> striped = ofSplitString(message,"/cr");
+		//for(int i=0;i<strPoints.size();i++){
+        vector<string> point = ofSplitString(striped[0],".");
+        if( point.size() == 2 ){
+            cout << point[0] << " " << point[1] << endl;
+            canId = point[0];
+            buttonEvent = ofToString(point[1].c_str());
+            if (buttonEvent == "CLEAR") {
+                cout << "CLEARING" << endl;
+                if(myStrokes.size()>0 && !bDrawing){
+                    for(int i=0; i<myStrokes.size(); i++)
+                    {
+                        myStrokes[i].clearStroke();
+                        myStrokes.clear();
+                        currentStroke = 0;
+                    }
+                    cout << "[CAN BUTTON] CLEAR ALL" <<endl;
+                }
+            }
+            //x=atof(point[0].c_str());
+            //y=atof(point[1].c_str());
+            //stroke.push_back(ofPoint(x,y));
+        }
+        if (point.size() == 3) {
+            cout << point[0] << " " << point[1] << " " << point[2] << endl;
+            canId = point[0];
+            vector<string> rgb = ofSplitString(point[1],",");
+            red = atof(rgb[0].c_str());
+            green = atof(rgb[1].c_str());
+            blue = atof(rgb[2].c_str());
+            sharp = atof(point[2].c_str());
+            red = ofMap(red, 0, 255, 255, 0);
+            green = ofMap(green, 0, 255, 255, 0);
+            blue = ofMap(blue, 0, 255, 255, 0);
+            panel.setValueI("VAL_R", red);
+            panel.setValueI("VAL_G", green);
+            panel.setValueI("VAL_B", blue);
+            panel.setValueI("VAL_SHARP", sharp);
+        }
+		//}
+	}
     for(int i=0; i<myStrokes.size(); i++)
 	{
 		myStrokes[i].strokeAmount = panel.getValueI("VAL_AMT");
 		myStrokes[i].size = panel.getValueI("VAL_SIZE");
 		//myStrokes[i].blurNum = panel.getValueI("VAL_BLUR");
 	}
-    red = panel.getValueI("VAL_R");
-	green = panel.getValueI("VAL_G");
-	blue = panel.getValueI("VAL_B");
+
 
 }
 

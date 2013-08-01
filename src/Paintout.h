@@ -4,6 +4,7 @@
 #include "ofxTuio.h"
 #include "stroke.h"
 #include "ofxControlPanel.h"
+#include "ofxNetwork.h"
 
 class PaintOut : public ofBaseApp{
 public:
@@ -34,6 +35,7 @@ public:
     ofxControlPanel  panel;
     ofxXmlSettings XML;
     ofTrueTypeFont TTF;
+    ofxUDPManager udpConnection;
     
     
     int red;
@@ -60,5 +62,8 @@ public:
 	bool canButton;
 	bool capButton;
     int buttonTime;
+    string canId;
+    string buttonEvent;
+    int distance;
 };
 

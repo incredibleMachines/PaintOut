@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B91B412F17A9B6D400436BF7 /* ofxTCPClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B91B412717A9B6D400436BF7 /* ofxTCPClient.cpp */; };
+		B91B413017A9B6D400436BF7 /* ofxTCPManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B91B412917A9B6D400436BF7 /* ofxTCPManager.cpp */; };
+		B91B413117A9B6D400436BF7 /* ofxTCPServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B91B412B17A9B6D400436BF7 /* ofxTCPServer.cpp */; };
+		B91B413217A9B6D400436BF7 /* ofxUDPManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B91B412D17A9B6D400436BF7 /* ofxUDPManager.cpp */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
 		DE9AB2DE16E2BE6C00EF3C30 /* guiBaseObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE9AB2A416E2BE6B00EF3C30 /* guiBaseObject.cpp */; };
 		DE9AB2DF16E2BE6C00EF3C30 /* guiCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE9AB2A616E2BE6B00EF3C30 /* guiCallback.cpp */; };
@@ -106,6 +110,16 @@
 
 /* Begin PBXFileReference section */
 		83AF1AA116E2DBE700F49395 /* PaintOut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaintOut.h; sourceTree = "<group>"; };
+		B91B412517A9B6D400436BF7 /* ofxNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxNetwork.h; sourceTree = "<group>"; };
+		B91B412617A9B6D400436BF7 /* ofxNetworkUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxNetworkUtils.h; sourceTree = "<group>"; };
+		B91B412717A9B6D400436BF7 /* ofxTCPClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxTCPClient.cpp; sourceTree = "<group>"; };
+		B91B412817A9B6D400436BF7 /* ofxTCPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTCPClient.h; sourceTree = "<group>"; };
+		B91B412917A9B6D400436BF7 /* ofxTCPManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxTCPManager.cpp; sourceTree = "<group>"; };
+		B91B412A17A9B6D400436BF7 /* ofxTCPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTCPManager.h; sourceTree = "<group>"; };
+		B91B412B17A9B6D400436BF7 /* ofxTCPServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxTCPServer.cpp; sourceTree = "<group>"; };
+		B91B412C17A9B6D400436BF7 /* ofxTCPServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTCPServer.h; sourceTree = "<group>"; };
+		B91B412D17A9B6D400436BF7 /* ofxUDPManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxUDPManager.cpp; sourceTree = "<group>"; };
+		B91B412E17A9B6D400436BF7 /* ofxUDPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxUDPManager.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		DE9AB2A416E2BE6B00EF3C30 /* guiBaseObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiBaseObject.cpp; sourceTree = "<group>"; };
 		DE9AB2A516E2BE6B00EF3C30 /* guiBaseObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiBaseObject.h; sourceTree = "<group>"; };
@@ -267,6 +281,31 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B91B412017A9B6D400436BF7 /* ofxNetwork */ = {
+			isa = PBXGroup;
+			children = (
+				B91B412417A9B6D400436BF7 /* src */,
+			);
+			path = ofxNetwork;
+			sourceTree = "<group>";
+		};
+		B91B412417A9B6D400436BF7 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B91B412517A9B6D400436BF7 /* ofxNetwork.h */,
+				B91B412617A9B6D400436BF7 /* ofxNetworkUtils.h */,
+				B91B412717A9B6D400436BF7 /* ofxTCPClient.cpp */,
+				B91B412817A9B6D400436BF7 /* ofxTCPClient.h */,
+				B91B412917A9B6D400436BF7 /* ofxTCPManager.cpp */,
+				B91B412A17A9B6D400436BF7 /* ofxTCPManager.h */,
+				B91B412B17A9B6D400436BF7 /* ofxTCPServer.cpp */,
+				B91B412C17A9B6D400436BF7 /* ofxTCPServer.h */,
+				B91B412D17A9B6D400436BF7 /* ofxUDPManager.cpp */,
+				B91B412E17A9B6D400436BF7 /* ofxUDPManager.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		BBAB23C913894ECA00AA2426 /* system frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -365,6 +404,7 @@
 		DE9AB3FC16E2D23600EF3C30 /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				B91B412017A9B6D400436BF7 /* ofxNetwork */,
 				DE9AB3FD16E2D23600EF3C30 /* ofxOsc */,
 				DE9AB42716E2D23600EF3C30 /* ofxTuio */,
 				DE9AB45216E2D23600EF3C30 /* ofxXmlSettings */,
@@ -712,6 +752,10 @@
 				DE9AB46D16E2D23600EF3C30 /* tinyxmlerror.cpp in Sources */,
 				DE9AB46E16E2D23600EF3C30 /* tinyxmlparser.cpp in Sources */,
 				DE9AB46F16E2D23600EF3C30 /* ofxXmlSettings.cpp in Sources */,
+				B91B412F17A9B6D400436BF7 /* ofxTCPClient.cpp in Sources */,
+				B91B413017A9B6D400436BF7 /* ofxTCPManager.cpp in Sources */,
+				B91B413117A9B6D400436BF7 /* ofxTCPServer.cpp in Sources */,
+				B91B413217A9B6D400436BF7 /* ofxUDPManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
