@@ -65,10 +65,11 @@ void PaintOut::update(){
 	udpConnection.Receive(udpMessage,100000);
 	string message=udpMessage;
 	if(message!=""){
+        ofBackground(0,0,0);
         cout << message << endl;
 		//stroke.clear();
 		float x,y;
-		vector<string> striped = ofSplitString(message,"/cr");
+		vector<string> striped = ofSplitString(message,"[/p]");
 		//for(int i=0;i<strPoints.size();i++){
         vector<string> point = ofSplitString(striped[0],".");
         if( point.size() == 2 ){
@@ -121,24 +122,24 @@ void PaintOut::update(){
 
 //--------------------------------------------------------------
 void PaintOut::draw(){
-    tuioClient.drawCursors();
+    //tuioClient.drawCursors();
     for(int i=0; i<myStrokes.size(); i++)
 	{
 		myStrokes[i].draw();
 	}
     ofSetColor(240, 240, 240);
-    panel.draw();
+    //panel.draw();
 }
 
 void PaintOut::tuioAdded(ofxTuioCursor &tuioCursor){
 	ofPoint loc = ofPoint(tuioCursor.getX()*ofGetWidth(),tuioCursor.getY()*ofGetHeight());
-	cout << "Point n" << tuioCursor.getSessionId() << " add at " << loc << endl;
+	//cout << "Point n" << tuioCursor.getSessionId() << " add at " << loc << endl;
     mousePressed(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight(), 0);
 }
 
 void PaintOut::tuioUpdated(ofxTuioCursor &tuioCursor){
 	ofPoint loc = ofPoint(tuioCursor.getX()*ofGetWidth(),tuioCursor.getY()*ofGetHeight());
-	cout << "Point n" << tuioCursor.getSessionId() << " updated at " << loc << endl;
+	//cout << "Point n" << tuioCursor.getSessionId() << " updated at " << loc << endl;
     if (tuioCursor.getX()>0.0 && tuioCursor.getY()>0.0) {
 		mouseDragged(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight(), 0);
 	}
@@ -146,7 +147,7 @@ void PaintOut::tuioUpdated(ofxTuioCursor &tuioCursor){
 
 void PaintOut::tuioRemoved(ofxTuioCursor &tuioCursor){
 	ofPoint loc = ofPoint(tuioCursor.getX()*ofGetWidth(),tuioCursor.getY()*ofGetHeight());
-	cout << "Point n" << tuioCursor.getSessionId() << " remove at " << loc << endl;
+	//cout << "Point n" << tuioCursor.getSessionId() << " remove at " << loc << endl;
     mouseReleased(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight(), 0);
 }
 //--------------------------------------------------------------

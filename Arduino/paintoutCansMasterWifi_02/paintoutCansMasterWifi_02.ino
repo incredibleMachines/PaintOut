@@ -1,18 +1,19 @@
 
 #include <WiFlyHQ.h>
 #define frontButton 2
-#define capButton 3
+#define capButton 12
 #define potInput A2
 #define potGround A3
 #define potPower A5
 #define sharpInput A0
+#define irLED 8
 
 
 #define canID A1
 
 /* Change these to match your WiFi network */
-const char mySSID[] = "The_Internet";
-const char myPassword[] = "JustMach1n3";
+const char mySSID[] = "expressnet";
+const char myPassword[] = "thisis4demo";
 //const char mySSID[] = "paintout";
 //const char myKey[] = "0123456890";
 const int resetPin = 11;
@@ -44,13 +45,21 @@ void setup()
   //pinMode(7, OUTPUT);
   pinMode(frontButton, INPUT);
   digitalWrite(frontButton, HIGH );
-  pinMode(potPower, OUTPUT);
-  digitalWrite(potPower,HIGH);
-  pinMode(potPower, OUTPUT);
-  digitalWrite(potGround, LOW);
+  pinMode(3, OUTPUT);
+  digitalWrite(3, LOW );
+  pinMode(A3,OUTPUT);
+  pinMode(A5,OUTPUT);
+  digitalWrite(A5,HIGH);
+  digitalWrite(A3,LOW);
+  pinMode(13,OUTPUT);
+  pinMode(capButton,INPUT);
+  digitalWrite(capButton,HIGH);
+  digitalWrite(13,LOW);
   //pinMode(6, OUTPUT);
-  pinMode (8, INPUT);
+  pinMode(irLED,OUTPUT);
+  pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
   
   char buf[32];
 //    pinMode(resetPin,OUTPUT);
@@ -66,6 +75,9 @@ void setup()
         //Serial.println("Failed to start wifly");
 	//terminal();
     }
+//    else{
+//      wifly.print("factory RESET");
+//    }
 
     if (wifly.getFlushTimeout() != 10) {
         //Serial.println("Restoring flush timeout to 10msecs");
@@ -95,28 +107,10 @@ void setup()
         //Serial.println("Already joined network");
     }
 
-//    /* Ping the gateway */
-//    wifly.getGateway(buf, sizeof(buf));
-//
-//    Serial.print("ping ");
-//    Serial.print(buf);
-//    Serial.print(" ... ");
-//    if (wifly.ping(buf)) {
-//	Serial.println("ok");
-//    } else {
-//	Serial.println("failed");
-//    }
-//
-//    Serial.print("ping google.com ... ");
-//    if (wifly.ping("google.com")) {
-//	Serial.println("ok");
-//    } else {
-//	Serial.println("failed");
-//    }
 
-    /* Setup for UDP packets, sent automatically */
+//    /* Setup for UDP packets, sent automatically */
     wifly.setIpProtocol(WIFLY_PROTOCOL_UDP);
-    //wifly.setHost("192.168.0.24", 11999);	// Send UDP packet to this server and port
+    wifly.setHost("10.0.1.2", 11999);	// Send UDP packet to this server and port
 
 //    Serial.print("MAC: ");
 //    Serial.println(wifly.getMAC(buf, sizeof(buf)));
@@ -131,29 +125,29 @@ void setup()
     //Serial.print("DeviceID: ");
     //Serial.println(wifly.getDeviceID(buf, sizeof(buf)));
 
-    wifly.setHost("192.168.0.24", 11999);	// Send UPD packets to this server and port
+     wifly.setHost("10.0.1.2", 11999);	// Send UDP packet to this server and port
 
     //Serial.println("WiFly ready");
 }
 
 void loop()
 {
-  int rpin = 9;
-  int gpin = 10;
-  int bpin = 11;
+//  int rpin = 9;
+//  int gpin = 10;
+//  int bpin = 11;
   //int ledPin = 4;
   //digitalWrite(4, HIGH);
-  int ldrVal = analogRead(ldr);
+  int ldrVal = analogRead(potInput);
   float h = ((float)ldrVal)/1024;
   int h_int = (int) 360*h;
   //int r=0, g=0, b=0;
-  int buttonState = digitalRead(8);
+  int buttonState = digitalRead(capButton);
   //digitalWrite(ledPin, HIGH);
   // Serial.println(ldrVal);
 
   h2rgb(h,r,g,b);
   int tmp;
-  tmp = analogRead(4);
+  tmp = analogRead(sharpInput);
   // Get button event and act accordingly
   int bu = checkButton();
   if (bu == 1) clickEvent();
@@ -162,8 +156,8 @@ void loop()
   if (bu == 4) longHoldEvent();
   if (bu == 5) clickHoldEvent();
 
-  if(buttonState == HIGH){
-    digitalWrite(10, HIGH);
+  if(buttonState == LOW){
+    digitalWrite(irLED, HIGH);
     wifly.print(canID);
     wifly.print(".");
     wifly.print(r);
@@ -172,15 +166,15 @@ void loop()
     wifly.print(",");
     wifly.print(b);
     wifly.print(".");
-    wifly.println(tmp);
+    wifly.print(tmp);
+    wifly.print("[/p]");
     //Serial.println("X");
     //vw_send((uint8_t *)bufferX, strlen(bufferX));  //actually send on RF
     //vw_wait_tx();             // Wait until the whole message is TXed
     delay(50);                // found i need a short delay before second TX
-    // }
   }
   else{
-    digitalWrite(10, LOW);
+    digitalWrite(irLED, LOW);
   }
 
 }
@@ -189,17 +183,20 @@ void loop()
 void clickEvent() {
   wifly.print(canID);
   wifly.print(".");
-  wifly.println("CLICK");
+  wifly.print("CLICK");
+  wifly.print("[/p]");
 }
 void doubleClickEvent() {
   wifly.print(canID);
   wifly.print(".");
-  wifly.println("DOUBLE");
+  wifly.print("DOUBLE");
+  wifly.print("[/p]");
 }
 void holdEvent() {
   wifly.print(canID);
   wifly.print(".");
-  wifly.println("HOLD");
+  wifly.print("HOLD");
+  wifly.print("[/p]");
 }
 void longHoldEvent() {
   //Serial.println("A2.LONG HOLD");
@@ -207,8 +204,10 @@ void longHoldEvent() {
 void clickHoldEvent() {
   wifly.print(canID);
   wifly.print(".");
-  wifly.println("CLEAR");
+  wifly.print("CLEAR");
+  wifly.print("[/p]");
 }
+
 
 
 
