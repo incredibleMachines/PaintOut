@@ -128,7 +128,7 @@ void PaintOut::draw(){
 		myStrokes[i].draw();
 	}
     ofSetColor(240, 240, 240);
-    //panel.draw();
+    panel.draw();
 }
 
 void PaintOut::tuioAdded(ofxTuioCursor &tuioCursor){
