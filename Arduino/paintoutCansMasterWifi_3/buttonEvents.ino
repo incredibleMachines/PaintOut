@@ -35,6 +35,7 @@ int checkButton()
   buttonVal = digitalRead(frontButton);
   // Button pressed down
   if (buttonVal == LOW && buttonLast == HIGH && (millis() - upTime) > debounce) {
+    digitalWrite(frontLED,HIGH);
     downTime = millis();
     ignoreUp = false;
     waitForUp = false;
@@ -54,6 +55,7 @@ int checkButton()
   else if (buttonVal == HIGH && buttonLast == LOW && (millis() - downTime) > debounce) { 
     if (not ignoreUp) {
       upTime = millis();
+      digitalWrite(frontLED,LOW);
       if (DConUp == false) DCwaiting = true;
       else {
         event = 2;

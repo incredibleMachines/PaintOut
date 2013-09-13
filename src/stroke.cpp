@@ -6,8 +6,8 @@
 
 
 //--------------------------------------------------------------------
-void stroke::addPoint(float x, float y){
-	pts.push_back(ofVec2f(x,y));
+void stroke::addPoint(int x, int y){
+	pts.push_back(ofPoint(x,y));
 }
 void stroke::addColor(int r, int g,int b, int o){
 	ofColor tempColor;
@@ -36,15 +36,15 @@ void stroke::draw(){
 			int dist = int(ofDist(pts[i].x, pts[i].y, pts[i+1].x, pts[i+1].y));
 			//cout << dist << endl;
 			ofPoint diff = pts[i];
-			for (int j=0; j<dist/(strokeAmount+(size/50)); j++) {
+			for (int j=0; j<dist/(strokeAmount+(strokeSize/50)); j++) {
 				//diff += diff + (pts[i+1]/dist);
 				//ballPos += (clickPos-ballPos)/5;
-				diff += (pts[i+1]-pts[i])/(dist/(strokeAmount+(size/50)));
+				diff += (pts[i+1]-pts[i])/(dist/(strokeAmount+(strokeSize/50)));
 				//diff += (pts[i+1]-pts[i])/(dist/20);
 				//ofCircle(diff.x, diff.y, size);
 				ofSetColor(colors[i].r, colors[i].g, colors[i].b);
                 ofEnableAlphaBlending();
-				brush[int(colors[i].a)].draw(diff.x-(size/2), diff.y-(size/2), size,size);
+				brush[int(colors[i].a)].draw(diff.x-(strokeSize/2), diff.y-(strokeSize/2), strokeSize,strokeSize);
                 ofDisableAlphaBlending();
                 //ofCircle(diff.x-(size/2), diff.y-(size/2), 20);
 			}
@@ -158,12 +158,12 @@ void stroke::smooth(float amount){
 	
 	if (pts.size() < 3) return;
 	
-	vector <ofVec2f> newPts;						// new pts
+	vector <ofPoint> newPts;						// new pts
 	
 	//--- store first point since we'll never resample it out of existence
 	newPts.push_back(pts.front());
 	for(int i = 1; i < (int)pts.size()-1; i++){
-		ofVec2f smoothedPoint;
+		ofPoint smoothedPoint;
 		smoothedPoint = amount * pts[i-1] + amount * pts[i+1] + (1-amount*2) * pts[i];
 		newPts.push_back(smoothedPoint);
 	}
@@ -180,7 +180,7 @@ void stroke::resample(int newNumPts){
 	
 	float D = 0.0;									// total distance, as we walk across
 	
-	vector <ofVec2f> newPts;						// new pts
+	vector <ofPoint> newPts;						// new pts
 	
 	//--- store first point since we'll never resample it out of existence
 	newPts.push_back(pts.front());

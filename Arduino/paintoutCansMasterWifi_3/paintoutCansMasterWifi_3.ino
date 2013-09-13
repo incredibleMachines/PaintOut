@@ -21,12 +21,14 @@
 //const char myPassword[] = "thisis4demo";
 //const char mySSID[] = "paintout";
 //const char myKey[] = "0123456890";
-const char mySSID[] = "internetz";
-const char myPassword[] = "1nt3rn3tz";
+//const char mySSID[] = "internetz";
+//const char myPassword[] = "1nt3rn3tz";
+const char mySSID[] = "localnet";
+const char myPassword[] = "Just4Machines";
 const int resetPin = 11;
 
 
-  
+
 
 //void terminal();
 
@@ -44,10 +46,10 @@ int r=0, g=0, b=0;
 void setup()
 {
   Serial.begin(9600);      // Debugging only
-//  while(!Serial){
-//    ;
-//  }
-//  Serial.println("setup");
+  //  while(!Serial){
+  //    ;
+  //  }
+  //  Serial.println("setup");
   //FRONT BUTTON
   pinMode(frontButton, INPUT);
   digitalWrite(frontButton, HIGH );
@@ -66,50 +68,52 @@ void setup()
   digitalWrite(irLED,HIGH);
 
   char buf[32];
-//    Serial.println("Starting");
-//    Serial.print("Free memory: ");
-//    Serial.println(wifly.getFreeMemory(),DEC);
+  //    Serial.println("Starting");
+  //    Serial.print("Free memory: ");
+  //    Serial.println(wifly.getFreeMemory(),DEC);
 
-    Serial1.begin(9600);
+  Serial1.begin(9600);
 
-    if (!wifly.begin(&Serial1,&Serial)) {
-        //Serial.println("Failed to start wifly");
-	//terminal();
+  if (!wifly.begin(&Serial1,&Serial)) {
+    //Serial.println("Failed to start wifly");
+    //terminal();
+  }
+  if (wifly.getFlushTimeout() != 10) {
+    //Serial.println("Restoring flush timeout to 10msecs");
+    wifly.setFlushTimeout(10);
+    wifly.save();
+    wifly.reboot();
+  }
+
+  /* Join wifi network if not already associated */
+  if (!wifly.isAssociated()) {
+    /* Setup the WiFly to connect to a wifi network */
+    //Serial.println("Joining network");
+    wifly.setSSID(mySSID);
+    wifly.setPassphrase(myPassword);
+    //wifly.setKey(myKey);
+    wifly.enableDHCP();
+    wifly.setJoin(WIFLY_WLAN_JOIN_AUTO);
+    wifly.save();
+
+    if (wifly.join()) {
+      //Serial.println("Joined wifi network");
+    } 
+    else {
+      //Serial.println("Failed to join wifi network");
+      //terminal();
     }
-    if (wifly.getFlushTimeout() != 10) {
-        //Serial.println("Restoring flush timeout to 10msecs");
-        wifly.setFlushTimeout(10);
-	wifly.save();
-	wifly.reboot();
-    }
-
-    /* Join wifi network if not already associated */
-    if (!wifly.isAssociated()) {
-	/* Setup the WiFly to connect to a wifi network */
-	//Serial.println("Joining network");
-	wifly.setSSID(mySSID);
-	wifly.setPassphrase(myPassword);
-        //wifly.setKey(myKey);
-	wifly.enableDHCP();
-        wifly.setJoin(WIFLY_WLAN_JOIN_AUTO);
-        wifly.save();
-
-	if (wifly.join()) {
-	    //Serial.println("Joined wifi network");
-	} else {
-	    //Serial.println("Failed to join wifi network");
-	    //terminal();
-	}
-    } else {
-        //Serial.println("Already joined network");
-    }
+  } 
+  else {
+    //Serial.println("Already joined network");
+  }
 
 
-//    /* Setup for UDP packets, sent automatically */
-    wifly.setIpProtocol(WIFLY_PROTOCOL_UDP);
-    wifly.setHost("192.168.1.2", 11999);	// Send UDP packet to this server and port
-    wifly.setDeviceID("Paintout-UDP");
-    wifly.setHost("192.168.1.2", 11999);	// Send UDP packet to this server and port
+  //    /* Setup for UDP packets, sent automatically */
+  wifly.setIpProtocol(WIFLY_PROTOCOL_UDP);
+  wifly.setHost("10.0.1.2", 11999);	// Send UDP packet to this server and port
+  wifly.setDeviceID("Paintout-A1");
+  wifly.setHost("10.0.1.2", 11999);	// Send UDP packet to this server and port
 
 }
 
@@ -117,9 +121,24 @@ void loop()
 {
   //SET THE RGB BASED ON THE POT VAL
   int ldrVal = analogRead(potInput);
-  float h = ((float)ldrVal)/1024;
-  int h_int = (int) 360*h;
-  h2rgb(h,r,g,b);
+  if(ldrVal >=1010){
+    r=g=b = 0;
+    analogWrite(redLED,0);
+    analogWrite(greenLED,0);
+    analogWrite(blueLED,0);
+  }else if(ldrVal<=10){
+    r = 0;
+    g = 255;
+    b = 255;
+    analogWrite(redLED,r);
+    analogWrite(greenLED,g);
+    analogWrite(blueLED,b);
+  }
+  else{
+    float h = ((float)ldrVal)/1024;
+    int h_int = (int) 360*h;
+    h2rgb(h,r,g,b);
+  }
 
   // Get button event and act accordingly
   int bu = checkButton();
@@ -128,11 +147,11 @@ void loop()
   if (bu == 3) holdEvent();
   if (bu == 4) longHoldEvent();
   if (bu == 5) clickHoldEvent();
-  
+
   //GET THE PROX READING
   int tmp;
   tmp = analogRead(sharpInput);
-  
+
   //CHECK THE CAP BUTTON
   int buttonState = digitalRead(capButton);
   if(buttonState == LOW){
@@ -147,16 +166,16 @@ void loop()
     wifly.print(".");
     wifly.print(tmp);
     wifly.print("[/p]");
-//    Serial.print(canID);
-//    Serial.print(".");
-//    Serial.print(r);
-//    Serial.print(",");
-//    Serial.print(g);
-//    Serial.print(",");
-//    Serial.print(b);
-//    Serial.print(".");
-//    Serial.print(tmp);
-//    Serial.print("[/p]");
+    //    Serial.print(canID);
+    //    Serial.print(".");
+    //    Serial.print(r);
+    //    Serial.print(",");
+    //    Serial.print(g);
+    //    Serial.print(",");
+    //    Serial.print(b);
+    //    Serial.print(".");
+    //    Serial.print(tmp);
+    //    Serial.print("[/p]");
     delay(50);                // found i need a short delay before second TX
   }
   else{
@@ -171,30 +190,31 @@ void clickEvent() {
   wifly.print(".");
   wifly.print("CLICK");
   wifly.print("[/p]");
-//  Serial.print(canID);
-//  Serial.print(".");
-//  Serial.print("CLICK");
-//  Serial.print("[/p]");
+  //  Serial.print(canID);
+  //  Serial.print(".");
+  //  Serial.print("CLICK");
+  //  Serial.print("[/p]");
 }
 void doubleClickEvent() {
   wifly.print(canID);
   wifly.print(".");
   wifly.print("DOUBLE");
   wifly.print("[/p]");
-//  Serial.print(canID);
-//  Serial.print(".");
-//  Serial.print("DOUBLE");
-//  Serial.print("[/p]");
+  //  Serial.print(canID);
+  //  Serial.print(".");
+  //  Serial.print("DOUBLE");
+  //  Serial.print("[/p]");
 }
 void holdEvent() {
+  digitalWrite(frontLED,LOW);
   wifly.print(canID);
   wifly.print(".");
   wifly.print("HOLD");
   wifly.print("[/p]");
-//  Serial.print(canID);
-//  Serial.print(".");
-//  Serial.print("HOLD");
-//  Serial.print("[/p]");
+  //  Serial.print(canID);
+  //  Serial.print(".");
+  //  Serial.print("HOLD");
+  //  Serial.print("[/p]");
 }
 void longHoldEvent() {
   //Serial.println("A2.LONG HOLD");
@@ -205,11 +225,12 @@ void clickHoldEvent() {
   wifly.print(".");
   wifly.print("CLEAR");
   wifly.print("[/p]");
-//  Serial.print(canID);
-//  Serial.print(".");
-//  Serial.print("CLEAR");
-//  Serial.print("[/p]");
+  //  Serial.print(canID);
+  //  Serial.print(".");
+  //  Serial.print("CLEAR");
+  //  Serial.print("[/p]");
 }
+
 
 
 

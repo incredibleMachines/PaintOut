@@ -4,6 +4,8 @@
 void PaintOut::setup(){
     ofEnableSmoothing();
     
+    logo.loadImage("megalogo.png");
+    drawLogo = false;
     tuioClient.start(3333);
     
     ofAddListener(tuioClient.cursorAdded,this,&PaintOut::tuioAdded);
@@ -36,7 +38,7 @@ void PaintOut::setup(){
     
     
     //SETUP PANEL
-    panel.setup("control", 1030, 0, 250, 600);
+    panel.setup("control", ofGetWidth()-250, 0, 250, 600);
 	panel.addPanel("paint settings", 1, false);
 	panel.setWhichPanel("paint settings");
 	
@@ -54,6 +56,7 @@ void PaintOut::setup(){
 
 	panel.loadSettings("settings.xml");
     TTF.loadFont("mono.ttf", 7);
+    panel.hide();
 }
 
 //--------------------------------------------------------------
@@ -66,26 +69,51 @@ void PaintOut::update(){
 	string message=udpMessage;
 	if(message!=""){
         ofBackground(0,0,0);
-        cout << message << endl;
+        //cout << message << endl;
 		//stroke.clear();
 		float x,y;
 		vector<string> striped = ofSplitString(message,"[/p]");
 		//for(int i=0;i<strPoints.size();i++){
         vector<string> point = ofSplitString(striped[0],".");
         if( point.size() == 2 ){
-            cout << point[0] << " " << point[1] << endl;
+            //cout << point[0] << " " << point[1] << endl;
             canId = point[0];
             buttonEvent = ofToString(point[1].c_str());
-            if (buttonEvent == "CLEAR") {
-                cout << "CLEARING" << endl;
+            if (buttonEvent == "HOLD") {
+                //cout << "CLEARING" << endl;
                 if(myStrokes.size()>0 && !bDrawing){
+                    ofImage screenie;
+                    screenie.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_COLOR_ALPHA);
+                    //displayGrabber.grabImage(screenie);
+                    ofxDisplay* display = ofxDisplay::getMainDisplay();
+                    display->grabImage(screenie);
+                    //screenie.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+                    string date = "riot/"+ofToString(ofGetUnixTime());
+                    screenie.saveImage(date+".png");
+                    //ofSaveViewport(date+".png");
                     for(int i=0; i<myStrokes.size(); i++)
                     {
                         myStrokes[i].clearStroke();
                         myStrokes.clear();
                         currentStroke = 0;
                     }
-                    cout << "[CAN BUTTON] CLEAR ALL" <<endl;
+                    //cout << "[CAN BUTTON] CLEAR ALL" <<endl;
+                }
+            }
+            if (buttonEvent == "CLICK") {
+                if(myStrokes.size()>0 && !bDrawing){
+                    
+                    //undo
+                    myStrokes[myStrokes.size()-1].clearStroke();
+                    myStrokes.pop_back();
+                    currentStroke--;
+                   // cout << "[CAN BUTTON]" << endl;
+                }
+            }
+            if (buttonEvent == "CLEAR") {
+                if(myStrokes.size()>0 && !bDrawing){
+                    
+                    drawLogo=!drawLogo;
                 }
             }
             //x=atof(point[0].c_str());
@@ -100,20 +128,24 @@ void PaintOut::update(){
             green = atof(rgb[1].c_str());
             blue = atof(rgb[2].c_str());
             sharp = atof(point[2].c_str());
+            int linear = (2914 / (sharp + 5)) - 1;
+            cout << "[linear] " << linear << endl;
+            int blur = ofMap(linear, 0, 25, 0, 9);
             red = ofMap(red, 0, 255, 255, 0);
             green = ofMap(green, 0, 255, 255, 0);
             blue = ofMap(blue, 0, 255, 255, 0);
             panel.setValueI("VAL_R", red);
             panel.setValueI("VAL_G", green);
             panel.setValueI("VAL_B", blue);
-            panel.setValueI("VAL_SHARP", sharp);
+            panel.setValueI("VAL_SHARP", linear);
+            panel.setValueI("VAL_BLUR", blur);
         }
 		//}
 	}
     for(int i=0; i<myStrokes.size(); i++)
 	{
 		myStrokes[i].strokeAmount = panel.getValueI("VAL_AMT");
-		myStrokes[i].size = panel.getValueI("VAL_SIZE");
+		myStrokes[i].strokeSize = panel.getValueI("VAL_SIZE");
 		//myStrokes[i].blurNum = panel.getValueI("VAL_BLUR");
 	}
 
@@ -129,6 +161,13 @@ void PaintOut::draw(){
 	}
     ofSetColor(240, 240, 240);
     panel.draw();
+    if(drawLogo){
+        ofEnableAlphaBlending();
+        ofSetRectMode(OF_RECTMODE_CENTER);
+        logo.draw(ofGetWidth()/2, ofGetHeight()/2);
+        ofSetRectMode(OF_RECTMODE_CORNER);
+        ofDisableAlphaBlending();
+    }
 }
 
 void PaintOut::tuioAdded(ofxTuioCursor &tuioCursor){
@@ -150,113 +189,8 @@ void PaintOut::tuioRemoved(ofxTuioCursor &tuioCursor){
 	//cout << "Point n" << tuioCursor.getSessionId() << " remove at " << loc << endl;
     mouseReleased(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight(), 0);
 }
-//--------------------------------------------------------------
-void PaintOut::setupArduino(const int & version){
-	
-    // remove listener because we don't need it anymore
-	ofRemoveListener(ard.EInitialized, this, &PaintOut::setupArduino);
-    
-    // it is now safe to send commands to the Arduino
-    bSetupArduino = true;
-    
-    // print firmware name and version to the console
-    cout << ard.getFirmwareName() << endl;
-    cout << "firmata v" << ard.getMajorFirmwareVersion() << "." << ard.getMinorFirmwareVersion() << endl;
-    
-	//ard.sendAnalogPinReporting(1, ARD_ANALOG);	//
-	ard.sendAnalogPinReporting(2, ARD_ANALOG);	//POT VALUE
-	ard.sendAnalogPinReporting(4, ARD_ANALOG);  //SHARP VALUE
-	ard.sendDigitalPinMode(8, ARD_INPUT);  //Cap Button
-	ard.sendDigitalPinMode(10, ARD_OUTPUT); //IR LED
-	ard.sendDigitalPinMode(2, ARD_INPUT); // Can Button
-	ard.sendDigitalPinMode(3, ARD_PWM);
-	ard.sendDigitalPinMode(5, ARD_PWM);
-	ard.sendDigitalPinMode(6, ARD_PWM);
-    // Listen for changes on the digital and analog pins
-    ofAddListener(ard.EDigitalPinChanged, this, &PaintOut::digitalPinChanged);
-    ofAddListener(ard.EAnalogPinChanged, this, &PaintOut::analogPinChanged);
-	//ard.sendDigitalPinMode(6, ARD_OUTPUT);
-	
-	//ard.sendAnalogPinReporting(5, ARD_ANALOG);	// get pot data
-}
-void PaintOut::updateArduino(){
-	
-	// update the arduino, get any data or messages:
-	ard.update();
-	if (bSetupArduino) {
-		int r,g,b=0;
-        ofBackground(0,0,0);
-		float h = ((float)ard.getAnalog(2))/1024;
-		int h_int = (int) 360*h;
-		h2rgb(h,r,g,b);
-		//ard.sendDigital(10, ARD_HIGH);
-		//cout << ard.getDigital(8) << endl;
-		if(ard.getDigital(8) == 1){
-			ard.sendDigital(10, ARD_HIGH);
-			capButton=true;
-		}else {
-			ard.sendDigital(10, ARD_LOW);
-			capButton=false;
-		}
-		ard.sendDigital(2, ARD_HIGH);
-		//cout << ard.getDigital(2) << endl;
-		if(ard.getDigital(2) == 0 && canButton == false){
-			buttonTime = ofGetElapsedTimeMillis();
-			canButton =true;
-            
-            if(myStrokes.size()>0 && !bDrawing){
-            
-            //undo
-            myStrokes[myStrokes.size()-1].clearStroke();
-            myStrokes.pop_back();
-            currentStroke--;
-            cout << "[CAN BUTTON]" << endl;
-            }
-        
-        }
-        else if (ard.getDigital(2) == 1) {
-			canButton=false;
-            if(bButtonError)bButtonError=false;
-		}
-        
-		if (canButton == true && (ofGetElapsedTimeMillis()-buttonTime)>= 2000) {
-			//changeSound=false;
-            
-            ard.sendPwm(3, 255);
-            ard.sendPwm(5, 255);
-            ard.sendPwm(6, 255);
-            
-            bButtonError = true;
-            
-            if(myStrokes.size()>0 && !bDrawing){
-                for(int i=0; i<myStrokes.size(); i++)
-                {
-                    myStrokes[i].clearStroke();
-                    myStrokes.clear();
-                    currentStroke = 0;
-                }
-                cout << "[CAN BUTTON] CLEAR ALL" <<endl;
-            }
-		}
-    
-        
-        if(!bButtonError){
-            //synthType = int(ofMap(ard.getAnalog(2), 1, 5, 0, 1023));
-            ard.sendPwm(3, ofMap(red, 0, 255, 255, 0));
-            ard.sendPwm(5, ofMap(green, 0, 255, 255, 0));
-            ard.sendPwm(6, ofMap(blue, 0, 255, 255, 0));
-            sharp = ard.getAnalog(4);
-            blurNum = ofMap(sharp, 300, 730, 9, 0);
-            panel.setValueI("VAL_R", red);
-            panel.setValueI("VAL_G", green);
-            panel.setValueI("VAL_B", blue);
-            panel.setValueI("VAL_BLUR", blurNum);
-            panel.setValueI("VAL_SHARP", sharp);
-            panel.setValueB("VAL_BUTT", canButton);
-            panel.setValueB("VAL_CAP", capButton);
-        }
-	}
-}
+
+
 //--------------------------------------------------------------
 void PaintOut::digitalPinChanged(const int & pinNum) {
     // do something with the digital input. here we're simply going to print the pin number and
@@ -276,16 +210,26 @@ void PaintOut::analogPinChanged(const int & pinNum) {
 
 //--------------------------------------------------------------
 void PaintOut::keyPressed(int key){
-
+    if(key == 's'){
+        drawLogo=!drawLogo;
+    }
+    if(key == 'p'){
+        if(panel.hidden){
+            panel.show();
+        }else{
+            panel.hide();
+        }
+    }
+    
 }
 
 //--------------------------------------------------------------
 void PaintOut::keyReleased(int key){
-    bDrawing = false;
-	newStroke = true;
-	//myStrokes[currentStroke].smooth(0.1f);		// smoothing for angle calculation.
-	
-	currentStroke++;
+//    bDrawing = false;
+//	newStroke = true;
+//	//myStrokes[currentStroke].smooth(0.1f);		// smoothing for angle calculation.
+//	
+//	currentStroke++;
 
 }
 
@@ -297,14 +241,22 @@ void PaintOut::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void PaintOut::mouseDragged(int x, int y, int button){
     //-------
+    if(x<=10 || y<=10){
+
+    }else{
 	myStrokes[currentStroke].addPoint(x,y);
 	myStrokes[currentStroke].addColor(red,green,blue,panel.getValueI("VAL_BLUR"));
     //myStrokes[currentStroke].addColor(255,0,0,50);
     panel.mouseDragged(x,y,button);
+    }
 }
 
 //--------------------------------------------------------------
 void PaintOut::mousePressed(int x, int y, int button){
+    
+    if(x<=10 || y<=10){
+
+    }else{
     bDrawing=true;
     stroke s;
 	s.brush = brushMain;
@@ -314,22 +266,28 @@ void PaintOut::mousePressed(int x, int y, int button){
 	myStrokes[currentStroke].addPoint(x,y);
 	myStrokes[currentStroke].addColor(red,green,blue,panel.getValueI("VAL_BLUR"));
     //myStrokes[currentStroke].addColor(255,0,0,50);
-    myStrokes[currentStroke].addPoint(x,y);
-	myStrokes[currentStroke].addColor(red,green,blue,panel.getValueI("VAL_BLUR"));
+    //myStrokes[currentStroke].addPoint(x,y);
+	//myStrokes[currentStroke].addColor(red,green,blue,panel.getValueI("VAL_BLUR"));
    // myStrokes[currentStroke].addColor(255,0,0,50);
 	//myBrushes.push_back( b );
 	newStroke = false;
     panel.mousePressed(x,y,button);
+    }
 }
 
 //--------------------------------------------------------------
 void PaintOut::mouseReleased(int x, int y, int button){
-	bDrawing = false;
+	
+    if(x<=10 || y<=10){
+        
+    }else{
+    bDrawing = false;
 	newStroke = true;
 	//myStrokes[currentStroke].smooth(0.1f);		// smoothing for angle calculation.
 	
 	currentStroke++;
 	panel.mouseReleased();
+    }
 }
 
 //--------------------------------------------------------------
@@ -404,3 +362,4 @@ void PaintOut::h2rgb(float H, int& R, int& G, int& B) {
         //		analogWrite(6, B);
 	}
 }
+

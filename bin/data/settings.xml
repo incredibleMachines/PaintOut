@@ -2,25 +2,25 @@
     <val_0>1.000000000</val_0>
 </VAL_AMT>
 <VAL_SIZE>
-    <val_0>113.766662598</val_0>
+    <val_0>68.438888550</val_0>
 </VAL_SIZE>
 <VAL_OP>
     <val_0>100.000000000</val_0>
 </VAL_OP>
 <VAL_R>
-    <val_0>81.433334351</val_0>
+    <val_0>1.000000000</val_0>
 </VAL_R>
 <VAL_G>
-    <val_0>132.233322144</val_0>
+    <val_0>255.000000000</val_0>
 </VAL_G>
 <VAL_B>
-    <val_0>255.000000000</val_0>
+    <val_0>142.000000000</val_0>
 </VAL_B>
 <VAL_BLUR>
-    <val_0>1.650000095</val_0>
+    <val_0>6.000000000</val_0>
 </VAL_BLUR>
 <VAL_SHARP>
-    <val_0>1.000000000</val_0>
+    <val_0>17.000000000</val_0>
 </VAL_SHARP>
 <VAL_CLEAR>
     <val_0>0.000000000</val_0>

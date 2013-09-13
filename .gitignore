@@ -62,4 +62,4 @@ Desktop.ini
  
 # Miscellaneous
 .mailmap
-
+bin/data/riot/*

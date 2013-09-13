@@ -5,6 +5,7 @@
 #include "stroke.h"
 #include "ofxControlPanel.h"
 #include "ofxNetwork.h"
+#include "ofxDisplay.h"
 
 class PaintOut : public ofBaseApp{
 public:
@@ -36,6 +37,7 @@ public:
     ofxXmlSettings XML;
     ofTrueTypeFont TTF;
     ofxUDPManager udpConnection;
+    //ofxDisplay displayGrabber;
     
     
     int red;
@@ -51,6 +53,9 @@ public:
     bool				newStroke;
     bool				bDrawing;
     bool                bButtonError;
+    bool  drawLogo;
+    ofImage logo;
+    
     
     //arduino stuff
     ofArduino	ard;

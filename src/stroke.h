@@ -12,12 +12,12 @@ class stroke {
 	
 	public:
 		
-	void	addPoint(float x, float y);
+	void	addPoint(int x, int y);
 	void    addColor(int r, int g,int b, int o);
 	void	clearStroke();
 	void	draw();
 
-	vector <ofVec2f> pts;
+	vector <ofPoint> pts;
 	vector <ofColor> colors;
 	vector <float> blurs;
 
@@ -30,7 +30,7 @@ class stroke {
 	void	resample(int newNumPts);
 	void	smooth(float amount);
 	int	strokeAmount;
-	int size;
+	int strokeSize;
 	//ofxBlurShader blur;
 	//shaderBlur blur;
 	//vector<ofImage> *brush;
