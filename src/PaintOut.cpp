@@ -4,7 +4,7 @@
 void PaintOut::setup(){
     ofEnableSmoothing();
     
-    logo.loadImage("megalogo.png");
+    logo.loadImage("megalogo1.png");
     drawLogo = false;
     tuioClient.start(3333);
     
@@ -241,22 +241,22 @@ void PaintOut::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void PaintOut::mouseDragged(int x, int y, int button){
     //-------
-    if(x<=10 || y<=10){
-
-    }else{
+//    if(x<=10 || y<=10){
+//
+//    }else{
 	myStrokes[currentStroke].addPoint(x,y);
 	myStrokes[currentStroke].addColor(red,green,blue,panel.getValueI("VAL_BLUR"));
     //myStrokes[currentStroke].addColor(255,0,0,50);
     panel.mouseDragged(x,y,button);
-    }
+    //}
 }
 
 //--------------------------------------------------------------
 void PaintOut::mousePressed(int x, int y, int button){
     
-    if(x<=10 || y<=10){
-
-    }else{
+//    if(x<=10 || y<=10){
+//
+//    }else{
     bDrawing=true;
     stroke s;
 	s.brush = brushMain;
@@ -272,7 +272,7 @@ void PaintOut::mousePressed(int x, int y, int button){
 	//myBrushes.push_back( b );
 	newStroke = false;
     panel.mousePressed(x,y,button);
-    }
+    //}
 }
 
 //--------------------------------------------------------------
