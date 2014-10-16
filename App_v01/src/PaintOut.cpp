@@ -36,6 +36,10 @@ void PaintOut::setup(){
 	currentStroke=0;
 	ofSetFrameRate(60);
     
+    bCursor = false;
+    ofHideCursor();
+    
+    nullSession = -1;
     
     //SETUP PANEL
     panel.setup("control", ofGetWidth()-250, 0, 250, 600);
@@ -156,13 +160,18 @@ void PaintOut::draw(){
 void PaintOut::tuioAdded(ofxTuioCursor &tuioCursor){
 	ofPoint loc = ofPoint(tuioCursor.getX()*ofGetWidth(),tuioCursor.getY()*ofGetHeight());
 	//cout << "Point n" << tuioCursor.getSessionId() << " add at " << loc << endl;
-    mousePressed(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight(), 0);
+    if (tuioCursor.getX()>0.0 && tuioCursor.getY()>0.0) {
+        mousePressed(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight(), 0);
+    }else{
+        nullSession= tuioCursor.getSessionId();
+    }
 }
 
 void PaintOut::tuioUpdated(ofxTuioCursor &tuioCursor){
 	ofPoint loc = ofPoint(tuioCursor.getX()*ofGetWidth(),tuioCursor.getY()*ofGetHeight());
 	//cout << "Point n" << tuioCursor.getSessionId() << " updated at " << loc << endl;
-    if (tuioCursor.getX()>0.0 && tuioCursor.getY()>0.0) {
+    
+    if (tuioCursor.getX()>0.0 && tuioCursor.getY()>0.0 && tuioCursor.getSessionId() != nullSession) {
 		mouseDragged(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight(), 0);
 	}
 }
@@ -170,7 +179,9 @@ void PaintOut::tuioUpdated(ofxTuioCursor &tuioCursor){
 void PaintOut::tuioRemoved(ofxTuioCursor &tuioCursor){
 	ofPoint loc = ofPoint(tuioCursor.getX()*ofGetWidth(),tuioCursor.getY()*ofGetHeight());
 	//cout << "Point n" << tuioCursor.getSessionId() << " remove at " << loc << endl;
-    mouseReleased(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight(), 0);
+    if(tuioCursor.getSessionId() != nullSession){
+        mouseReleased(tuioCursor.getX()*ofGetWidth(), tuioCursor.getY()*ofGetHeight(), 0);
+    }
 }
 
 
@@ -195,6 +206,14 @@ void PaintOut::analogPinChanged(const int & pinNum) {
 void PaintOut::keyPressed(int key){
     if(key == 's'){
         drawLogo=!drawLogo;
+    }
+    if(key == 'h'){
+        if(bCursor){
+            ofHideCursor();
+        }else{
+            ofShowCursor();
+        }
+        bCursor=!bCursor;
     }
     if(key == 'p'){
         if(panel.hidden){
@@ -249,6 +268,7 @@ void PaintOut::mousePressed(int x, int y, int button){
 	//pngBrush b;
 	//s.blurNum = panel.getValueI("VAL_BLUR");
 	myStrokes.push_back( s );
+    currentStroke = myStrokes.size() -1;
 	myStrokes[currentStroke].addPoint(x,y);
 	myStrokes[currentStroke].addColor(red,green,blue,panel.getValueI("VAL_BLUR"));
     //myStrokes[currentStroke].addColor(255,0,0,50);
@@ -271,7 +291,7 @@ void PaintOut::mouseReleased(int x, int y, int button){
 	newStroke = true;
 	//myStrokes[currentStroke].smooth(0.1f);		// smoothing for angle calculation.
 	
-	currentStroke++;
+	//currentStroke++;
 	panel.mouseReleased();
     //}
 }

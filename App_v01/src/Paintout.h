@@ -57,6 +57,8 @@ public:
     bool  drawLogo;
     ofImage logo;
     
+    bool bCursor;
+    int nullSession;
     
     //arduino stuff
     ofArduino	ard;
