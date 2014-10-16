@@ -665,6 +665,8 @@
 /* Begin PBXProject section */
 		E4B69B4C0A3A1720003C02F2 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "PaintOut" */;
 			compatibilityVersion = "Xcode 2.4";
 			developmentRegion = English;
@@ -821,6 +823,7 @@
 					addons/ofxOsc/libs/oscpack/src/ip/win32,
 					addons/ofxOsc/src,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",
@@ -864,6 +867,7 @@
 					addons/ofxOsc/libs/oscpack/src/ip/win32,
 					addons/ofxOsc/src,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OTHER_CPLUSPLUSFLAGS = (
 					"-D__MACOSX_CORE__",
 					"-lpthread",

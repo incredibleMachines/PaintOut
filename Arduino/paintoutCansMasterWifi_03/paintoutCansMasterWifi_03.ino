@@ -13,8 +13,8 @@
 #define canID A1
 
 /* Change these to match your WiFi network */
-const char mySSID[] = "expressnet";
-const char myPassword[] = "thisis4demo";
+const char mySSID[] = "localnet";
+const char myPassword[] = "Just4Machines";
 //const char mySSID[] = "paintout";
 //const char myKey[] = "0123456890";
 const int resetPin = 11;
@@ -70,9 +70,9 @@ void setup()
     //Serial.print("Free memory: ");
     //Serial.println(wifly.getFreeMemory(),DEC);
 
-    Serial.begin(9600);
+    Serial1.begin(9600);
 
-    if (!wifly.begin(&Serial)) {
+    if (!wifly.begin(&Serial1)) {
         //Serial.println("Failed to start wifly");
 	//terminal();
     }
@@ -111,7 +111,7 @@ void setup()
 
 //    /* Setup for UDP packets, sent automatically */
     wifly.setIpProtocol(WIFLY_PROTOCOL_UDP);
-    wifly.setHost("10.0.1.2", 11999);	// Send UDP packet to this server and port
+    wifly.setHost("10.0.1.100", 11999);	// Send UDP packet to this server and port
 
 //    Serial.print("MAC: ");
 //    Serial.println(wifly.getMAC(buf, sizeof(buf)));
@@ -122,11 +122,11 @@ void setup()
 //    Serial.print("Gateway: ");
 //    Serial.println(wifly.getGateway(buf, sizeof(buf)));
 
-    wifly.setDeviceID("Paintout-UDP");
+    wifly.setDeviceID("Paintout-A1");
     //Serial.print("DeviceID: ");
     //Serial.println(wifly.getDeviceID(buf, sizeof(buf)));
 
-     wifly.setHost("10.0.1.2", 11999);	// Send UDP packet to this server and port
+     wifly.setHost("10.0.1.100", 11999);	// Send UDP packet to this server and port
 
     //Serial.println("WiFly ready");
 }

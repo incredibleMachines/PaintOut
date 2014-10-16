@@ -17,14 +17,14 @@
 #define canID A1
 
 /* Change these to match your WiFi network */
-//const char mySSID[] = "expressnet";
-//const char myPassword[] = "thisis4demo";
+const char mySSID[] = "expressnet";
+const char myPassword[] = "thisis4demo";
 //const char mySSID[] = "paintout";
 //const char myKey[] = "0123456890";
 //const char mySSID[] = "internetz";
 //const char myPassword[] = "1nt3rn3tz";
-const char mySSID[] = "localnet";
-const char myPassword[] = "Just4Machines";
+//const char mySSID[] = "localnet";
+//const char myPassword[] = "Just4Machines";
 const int resetPin = 11;
 
 

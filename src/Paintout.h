@@ -30,6 +30,7 @@ public:
     void digitalPinChanged(const int & pinNum);
     void analogPinChanged(const int & pinNum);
     void updateArduino();
+    void clear();
     
     void h2rgb(float H, int& R, int& G, int& B);
     

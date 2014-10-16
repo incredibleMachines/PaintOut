@@ -14,15 +14,15 @@
 #define blueLED 11
 
 
-#define canID A1
+#define canID A2
 
 /* Change these to match your WiFi network */
 //const char mySSID[] = "expressnet";
 //const char myPassword[] = "thisis4demo";
 //const char mySSID[] = "paintout";
 //const char myKey[] = "0123456890";
-const char mySSID[] = "internetz";
-const char myPassword[] = "1nt3rn3tz";
+const char mySSID[] = "localnet";
+const char myPassword[] = "Just4Machines";
 const int resetPin = 11;
 
 
@@ -43,10 +43,10 @@ int r=0, g=0, b=0;
 
 void setup()
 {
-  Serial.begin(9600);      // Debugging only
-  while(!Serial){
-    ;
-  }
+  Serial.begin(57600);      // Debugging only
+//  while(!Serial){
+//    ;
+//  }
   Serial.println("setup");
   //FRONT BUTTON
   pinMode(frontButton, INPUT);
@@ -107,9 +107,9 @@ void setup()
 
 //    /* Setup for UDP packets, sent automatically */
     wifly.setIpProtocol(WIFLY_PROTOCOL_UDP);
-    wifly.setHost("192.168.1.2", 11999);	// Send UDP packet to this server and port
-    wifly.setDeviceID("Paintout-UDP");
-    wifly.setHost("192.168.1.2", 11999);	// Send UDP packet to this server and port
+    wifly.setHost("10.0.1.100", 11999);	// Send UDP packet to this server and port
+    wifly.setDeviceID("Paintout-A2");
+    wifly.setHost("10.0.1.100", 11999);	// Send UDP packet to this server and port
 
 }
 

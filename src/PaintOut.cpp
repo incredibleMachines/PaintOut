@@ -4,7 +4,7 @@
 void PaintOut::setup(){
     ofEnableSmoothing();
     
-    logo.loadImage("megalogo1.png");
+    logo.loadImage("paintoutBG.jpg");
     drawLogo = false;
     tuioClient.start(3333);
     
@@ -80,25 +80,7 @@ void PaintOut::update(){
             canId = point[0];
             buttonEvent = ofToString(point[1].c_str());
             if (buttonEvent == "HOLD") {
-                //cout << "CLEARING" << endl;
-                if(myStrokes.size()>0 && !bDrawing){
-                    ofImage screenie;
-                    screenie.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_COLOR_ALPHA);
-                    //displayGrabber.grabImage(screenie);
-                    ofxDisplay* display = ofxDisplay::getMainDisplay();
-                    display->grabImage(screenie);
-                    //screenie.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
-                    string date = "riot/"+ofToString(ofGetUnixTime());
-                    screenie.saveImage(date+".png");
-                    //ofSaveViewport(date+".png");
-                    for(int i=0; i<myStrokes.size(); i++)
-                    {
-                        myStrokes[i].clearStroke();
-                        myStrokes.clear();
-                        currentStroke = 0;
-                    }
-                    //cout << "[CAN BUTTON] CLEAR ALL" <<endl;
-                }
+                clear();
             }
             if (buttonEvent == "CLICK") {
                 if(myStrokes.size()>0 && !bDrawing){
@@ -110,12 +92,12 @@ void PaintOut::update(){
                    // cout << "[CAN BUTTON]" << endl;
                 }
             }
-            if (buttonEvent == "CLEAR") {
-                if(myStrokes.size()>0 && !bDrawing){
-                    
-                    drawLogo=!drawLogo;
-                }
-            }
+//            if (buttonEvent == "CLEAR") {
+//                if(myStrokes.size()>0 && !bDrawing){
+//                    
+//                    drawLogo=!drawLogo;
+//                }
+//            }
             //x=atof(point[0].c_str());
             //y=atof(point[1].c_str());
             //stroke.push_back(ofPoint(x,y));
@@ -155,12 +137,6 @@ void PaintOut::update(){
 //--------------------------------------------------------------
 void PaintOut::draw(){
     //tuioClient.drawCursors();
-    for(int i=0; i<myStrokes.size(); i++)
-	{
-		myStrokes[i].draw();
-	}
-    ofSetColor(240, 240, 240);
-    panel.draw();
     if(drawLogo){
         ofEnableAlphaBlending();
         ofSetRectMode(OF_RECTMODE_CENTER);
@@ -168,6 +144,13 @@ void PaintOut::draw(){
         ofSetRectMode(OF_RECTMODE_CORNER);
         ofDisableAlphaBlending();
     }
+    for(int i=0; i<myStrokes.size(); i++)
+	{
+		myStrokes[i].draw();
+	}
+    ofSetColor(240, 240, 240);
+    panel.draw();
+
 }
 
 void PaintOut::tuioAdded(ofxTuioCursor &tuioCursor){
@@ -219,6 +202,9 @@ void PaintOut::keyPressed(int key){
         }else{
             panel.hide();
         }
+    }
+    if(key == 'c'){
+        clear();
     }
     
 }
@@ -278,16 +264,16 @@ void PaintOut::mousePressed(int x, int y, int button){
 //--------------------------------------------------------------
 void PaintOut::mouseReleased(int x, int y, int button){
 	
-    if(x<=10 || y<=10){
-        
-    }else{
+//    if(x<=10 || y<=10){
+//        
+//    }else{
     bDrawing = false;
 	newStroke = true;
 	//myStrokes[currentStroke].smooth(0.1f);		// smoothing for angle calculation.
 	
 	currentStroke++;
 	panel.mouseReleased();
-    }
+    //}
 }
 
 //--------------------------------------------------------------
@@ -301,7 +287,30 @@ void PaintOut::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void PaintOut::dragEvent(ofDragInfo dragInfo){ 
+void PaintOut::clear(){
+    //cout << "CLEARING" << endl;
+    if(myStrokes.size()>0 && !bDrawing){
+        ofImage screenie;
+        screenie.allocate(ofGetWidth(), ofGetHeight(), OF_IMAGE_COLOR_ALPHA);
+        //displayGrabber.grabImage(screenie);
+        ofxDisplay* display = ofxDisplay::getMainDisplay();
+        display->grabImage(screenie);
+        //screenie.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+        string date = "gumbolive/"+ofToString(ofGetUnixTime());
+        screenie.saveImage(date+".png");
+        //ofSaveViewport(date+".png");
+        for(int i=0; i<myStrokes.size(); i++)
+        {
+            myStrokes[i].clearStroke();
+            myStrokes.clear();
+            currentStroke = 0;
+        }
+        //cout << "[CAN BUTTON] CLEAR ALL" <<endl;
+    }
+}
+
+//--------------------------------------------------------------
+void PaintOut::dragEvent(ofDragInfo dragInfo){
 
 }
 void PaintOut::h2rgb(float H, int& R, int& G, int& B) {
